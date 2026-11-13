@@ -1,0 +1,40 @@
+---
+// The blog list: every post in src/content/blog/, newest first.
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { site } from "../../config";
+import { formatDate } from "../../site-helpers";
+
+const posts = (await getCollection("blog", ({ data }) => data.draft !== true && (site.showPlovifyExamples || data.sample !== true))).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Base title={`Blog | ${site.name}`} description={`News and stories from ${site.name}.`}>
+  <section class="section">
+    <div class="container narrow-content">
+      <div class="section-head">
+        <p class="kicker">Blog</p>
+        <h1>News from {site.name}</h1>
+        <p class="lead">What we are building, what we learn, and what is coming next.</p>
+      </div>
+
+      {posts.length === 0 && <p class="panel muted">Our first post is coming soon.</p>}
+
+      <ul class="post-list">
+        {
+          posts.map((post) => (
+            <li>
+              <a class="post-card" href={`/blog/${post.id}/`}>
+                <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <span class="read-more">Read post →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>

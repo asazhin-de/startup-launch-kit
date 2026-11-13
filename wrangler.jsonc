@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // "name" is the name of your Worker. It becomes part of your website address.
+  "name": "startup-launch-kit",
+  "compatibility_date": "2026-10-01",
+
+  // LEVEL 1: a static website.
+  // Astro builds the site into ./dist and Cloudflare serves it worldwide.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

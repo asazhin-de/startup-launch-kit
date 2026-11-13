@@ -1,0 +1,34 @@
+---
+// Top navigation bar. Links are built from src/config.ts automatically.
+import Logo from "./Logo.astro";
+import { ctaHref, ctaText, navLinks } from "../site-helpers";
+---
+
+<header class="nav">
+  <div class="container nav-inner">
+    <Logo />
+
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        {navLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="button small" href={ctaHref}>{ctaText}</a>
+
+      {/* Mobile menu: a native details element, no JavaScript needed */}
+      <details class="nav-menu">
+        <summary aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </summary>
+        <ul>
+          {navLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+          <li><a class="menu-cta" href={ctaHref}>{ctaText} →</a></li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</header>

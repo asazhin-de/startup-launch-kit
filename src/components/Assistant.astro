@@ -1,0 +1,80 @@
+---
+// LEVEL 3: AI assistant ("Ask <your startup>").
+// The browser sends one question to /api/ask, which is handled by
+// worker/index.ts and answered by Workers AI using the text in src/config.ts.
+import { content } from "../site-content";
+
+const { title, text, suggestions } = content.assistant;
+---
+
+<section id="ask" class="section section-soft">
+  <div class="container narrow-content">
+    <div class="section-head">
+      <p class="kicker">AI assistant</p>
+      <h2>{title}</h2>
+      <p class="muted">{text}</p>
+    </div>
+    <div class="panel">
+      <form id="ask-form">
+        <label class="visually-hidden" for="ask-question">Your question</label>
+        <div class="row">
+          <input
+            id="ask-question"
+            name="question"
+            type="text"
+            minlength="2"
+            maxlength="500"
+            placeholder="Type your question..."
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="button">Ask</button>
+        </div>
+      </form>
+      {
+        suggestions.length > 0 && (
+          <div class="suggestions" aria-label="Suggested questions">
+            {suggestions.map((q) => (
+              <button type="button" class="chip-button" data-question={q}>
+                {q}
+              </button>
+            ))}
+          </div>
+        )
+      }
+      <div id="ask-output" class="output" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("ask-form") as HTMLFormElement;
+  const input = document.getElementById("ask-question") as HTMLInputElement;
+  const output = document.getElementById("ask-output") as HTMLElement;
+
+  // Clicking a suggested question fills it in and asks it.
+  document.querySelectorAll<HTMLButtonElement>(".chip-button").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      input.value = chip.dataset.question ?? "";
+      form.requestSubmit();
+    });
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    output.textContent = "Thinking...";
+
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ question: input.value }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? "Something went wrong");
+      output.textContent = body.answer;
+    } catch (err) {
+      output.textContent = (err as Error).message;
+    }
+  });
+</script>

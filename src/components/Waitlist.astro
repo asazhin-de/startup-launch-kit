@@ -1,0 +1,55 @@
+---
+// LEVEL 2: waitlist form.
+// The browser sends the email to /api/waitlist, which is handled by
+// worker/index.ts and stored in a D1 database.
+// The texts use your startup's name (see src/site-content.ts).
+import { content } from "../site-content";
+
+const { title, text, button, countLabel } = content.waitlist;
+---
+
+<section id="waitlist" class="section">
+  <div class="container">
+    <div class="panel panel-feature">
+      <div>
+        <p class="kicker">Waitlist</p>
+        <h2>{title}</h2>
+        <p class="muted">{text}</p>
+      </div>
+      <div>
+        <form id="waitlist-form" class="row" data-count-label={countLabel}>
+          <label class="visually-hidden" for="waitlist-email">Email address</label>
+          <input id="waitlist-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required />
+          <button type="submit" class="button">{button}</button>
+        </form>
+        <p id="waitlist-status" class="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("waitlist-form") as HTMLFormElement;
+  const status = document.getElementById("waitlist-status") as HTMLElement;
+  const countLabel = form.dataset.countLabel;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = new FormData(form).get("email");
+    status.textContent = "Saving...";
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
+      status.textContent = `You're in! ${countLabel}: ${data.count}.`;
+      form.reset();
+    } catch (err) {
+      status.textContent = (err as Error).message;
+    }
+  });
+</script>

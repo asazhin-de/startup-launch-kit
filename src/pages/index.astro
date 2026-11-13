@@ -1,0 +1,149 @@
+---
+// The home page. All text comes from src/config.ts.
+import Base from "../layouts/Base.astro";
+import HeroArt from "../components/HeroArt.astro";
+import Icon from "../components/Icon.astro";
+import Waitlist from "../components/Waitlist.astro";
+import Assistant from "../components/Assistant.astro";
+import { site } from "../config";
+import { content } from "../site-content";
+import { ctaHref, ctaText, faq, featureIcons, features, menu, stats, steps } from "../site-helpers";
+---
+
+<Base title={`${site.name} | ${site.tagline}`} description={site.description}>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>{content.eyebrow || site.name}</p>
+        <h1>{site.tagline}</h1>
+        <p class="lead">{site.description}</p>
+        <div class="actions">
+          <a class="button" href={ctaHref}>{ctaText}</a>
+          <a class="button ghost" href="/blog/">Read our blog</a>
+        </div>
+      </div>
+      <HeroArt />
+    </div>
+  </section>
+
+  {
+    stats.length > 0 && (
+      <section class="stats" aria-label="Key numbers">
+        <div class="container stats-grid">
+          {stats.map((stat) => (
+            <div class="stat">
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    features.length > 0 && (
+      <section id="features" class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="kicker">Features</p>
+            <h2>Why {site.name}</h2>
+          </div>
+          <div class="features">
+            {features.map((feature, i) => (
+              <article class="card">
+                <span class="icon-badge">
+                  <Icon name={featureIcons[i % featureIcons.length]} />
+                </span>
+                <h3>{feature.title}</h3>
+                <p>{feature.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    menu.length > 0 && (
+      <section id="menu" class="section section-soft">
+        <div class="container">
+          <div class="section-head">
+            <p class="kicker">Menu</p>
+            <h2>What's cooking</h2>
+          </div>
+          <ul class="menu">
+            {menu.map((item) => (
+              <li class="menu-item">
+                <div class="menu-head">
+                  <h3>{item.name}</h3>
+                  {item.label && <span class="tag">{item.label}</span>}
+                </div>
+                <p>{item.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    steps.length > 0 && (
+      <section id="how-it-works" class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="kicker">How it works</p>
+            <h2>Up and running in {steps.length} steps</h2>
+          </div>
+          <ol class="steps">
+            {steps.map((step, i) => (
+              <li class="step">
+                <span class="step-number" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {site.enableWaitlist && <Waitlist />}
+  {site.enableAssistant && <Assistant />}
+
+  {
+    faq.length > 0 && (
+      <section id="faq" class="section">
+        <div class="container narrow-content">
+          <div class="section-head">
+            <p class="kicker">FAQ</p>
+            <h2>Frequently asked questions</h2>
+          </div>
+          <div class="faq">
+            {faq.map((item) => (
+              <details>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Ready to try {site.name}?</h2>
+        <p>{site.tagline}</p>
+        <a class="button" href={ctaHref}>{ctaText}</a>
+      </div>
+    </div>
+  </section>
+</Base>

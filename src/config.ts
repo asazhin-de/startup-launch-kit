@@ -50,6 +50,6 @@ export const site: SiteConfig = {
   //  Workshop switches. Leave as `false` until the workbook
   //  tells you to turn them on.
   // ----------------------------------------------------------
-  enableWaitlist: false, // Level 2
+  enableWaitlist: true, // Level 2
   enableAssistant: false, // Level 3
 };

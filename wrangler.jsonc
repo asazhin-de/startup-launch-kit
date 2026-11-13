@@ -1,15 +1,30 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  // "name" is the name of your Worker. It becomes part of your website address.
+  // IMPORTANT: "name" must match the name of YOUR Worker.
+  // If you renamed it when you clicked "Deploy to Cloudflare", put that name here.
   "name": "startup-launch-kit",
   "compatibility_date": "2026-10-01",
 
-  // LEVEL 1: a static website.
-  // Astro builds the site into ./dist and Cloudflare serves it worldwide.
+  // LEVEL 2: website + backend + database.
+  // The Worker in worker/index.ts handles /api/* requests.
+  "main": "worker/index.ts",
+
+  // Everything else is the static website that Astro builds into ./dist.
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
   },
+
+  // A D1 (SQL) database for waitlist emails.
+  // No ID needed: Cloudflare creates the database automatically on deploy.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "startup-launch-kit-db"
+    }
+  ],
 
   "observability": {
     "enabled": true

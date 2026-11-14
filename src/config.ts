@@ -51,5 +51,5 @@ export const site: SiteConfig = {
   //  tells you to turn them on.
   // ----------------------------------------------------------
   enableWaitlist: true, // Level 2
-  enableAssistant: false, // Level 3
+  enableAssistant: true, // Level 3
 };

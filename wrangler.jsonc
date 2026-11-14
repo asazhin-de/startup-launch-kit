@@ -5,7 +5,7 @@
   "name": "startup-launch-kit",
   "compatibility_date": "2026-10-01",
 
-  // LEVEL 2: website + backend + database.
+  // LEVEL 3: website + backend + database + AI.
   // The Worker in worker/index.ts handles /api/* requests.
   "main": "worker/index.ts",
 
@@ -25,6 +25,11 @@
       "database_name": "startup-launch-kit-db"
     }
   ],
+
+  // Workers AI: run AI models without managing any servers or GPUs.
+  "ai": {
+    "binding": "AI"
+  },
 
   "observability": {
     "enabled": true
